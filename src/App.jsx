@@ -5,6 +5,8 @@ import 'aos/dist/aos.css';
 import Layout from './components/Layout/Layout';
 import Home from'./pages/Home';
 import { useAuthStore } from './store/authStore';
+import Login from './pages/Login';
+import Register from './pages/Register';
 
 function App() {
   const { initAuth } = useAuthStore();
@@ -24,6 +26,8 @@ function App() {
       <Layout>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
         </Routes>
       </Layout>
     </Router>
