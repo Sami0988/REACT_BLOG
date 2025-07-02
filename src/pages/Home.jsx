@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { PenTool, Users, MessageCircle, TrendingUp } from 'lucide-react';
-
+import SearchBox from '../components/UI/SearchBox';
 import { useAuthStore } from '../store/authStore';
 
 
@@ -18,7 +18,7 @@ const Home = () => {
           <h1 className="text-5xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
             Welcome to{' '}
             <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
-              MyBlog
+              BlogHub
             </span>
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto leading-relaxed">
@@ -81,7 +81,7 @@ const Home = () => {
       </section>
 
       {/* Search Section */}
-  
+      <SearchBox />
 
       {/* Featured Posts Section */}
       <section>
