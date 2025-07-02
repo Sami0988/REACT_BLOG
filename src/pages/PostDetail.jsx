@@ -4,6 +4,8 @@ import { Calendar, User, ArrowLeft, Edit, Trash2, MessageCircle } from 'lucide-r
 import { format } from 'date-fns';
 import { usePostsStore } from '../store/postsStore';
 import { useAuthStore } from '../store/authStore';
+import CommentList from '../components/Comments/CommentList';
+import CommentForm from '../components/Comments/CommentForm';
 import { MOCK_POSTS } from '../utils/constants';
 
 const PostDetail = () => {
@@ -187,7 +189,14 @@ const PostDetail = () => {
           </div>
         </div>
 
-       
+        <div className="p-6 space-y-6">
+          <CommentForm 
+            onSubmit={handleAddComment}
+            isSubmitting={isSubmittingComment}
+          />
+          
+          <CommentList comments={currentPost.comments} />
+        </div>
       </div>
     </div>
   );
