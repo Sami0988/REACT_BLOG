@@ -2,11 +2,27 @@ import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { PenTool, Users, MessageCircle, TrendingUp } from 'lucide-react';
 import SearchBox from '../components/UI/SearchBox';
+import PostList from '../components/Posts/PostList';
+import { usePostsStore } from '../store/postsStore';
 import { useAuthStore } from '../store/authStore';
-
+import { MOCK_POSTS } from '../utils/constants';
 
 const Home = () => {
+  const { filteredPosts, isLoading, error, fetchPosts } = usePostsStore();
   const { isAuthenticated } = useAuthStore();
+
+  useEffect(() => {
+    // For demo purposes, use mock data
+    if (filteredPosts.length === 0) {
+      usePostsStore.setState({ 
+        posts: MOCK_POSTS, 
+        filteredPosts: MOCK_POSTS 
+      });
+    }
+    // Uncomment this to use real API
+    // fetchPosts();
+  }, []);
+
   return (
     <div className="space-y-12">
       {/* Hero Section */}
@@ -107,7 +123,11 @@ const Home = () => {
           )}
         </div>
 
-       
+        <PostList 
+          posts={filteredPosts} 
+          isLoading={isLoading}
+          error={error}
+        />
       </section>
     </div>
   );
