@@ -6,6 +6,9 @@ import PostList from '../components/Posts/PostList';
 import { usePostsStore } from '../store/postsStore';
 import { useAuthStore } from '../store/authStore';
 import { MOCK_POSTS } from '../utils/constants';
+import Footer from '../components/UI/Footer';
+
+import About from './About';
 
 const Home = () => {
   const { filteredPosts, isLoading, error, fetchPosts } = usePostsStore();
@@ -129,6 +132,8 @@ const Home = () => {
           error={error}
         />
       </section>
+      <About/>
+      <Footer />
     </div>
   );
 };

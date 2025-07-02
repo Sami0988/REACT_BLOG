@@ -16,7 +16,6 @@ const PostDetail = () => {
   const [isSubmittingComment, setIsSubmittingComment] = useState(false);
 
   useEffect(() => {
-    // For demo purposes, use mock data
     const mockPost = MOCK_POSTS.find(post => post.id === parseInt(id));
     if (mockPost) {
       usePostsStore.setState({ currentPost: mockPost });

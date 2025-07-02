@@ -9,6 +9,8 @@ import PostDetail from './pages/PostDetail';
 import Login from './pages/Login';
 import Register from './pages/Register';
 
+
+
 function App() {
   const { initAuth } = useAuthStore();
 
@@ -30,6 +32,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/posts/:id" element={<PostDetail />} />
+           
         </Routes>
       </Layout>
     </Router>
