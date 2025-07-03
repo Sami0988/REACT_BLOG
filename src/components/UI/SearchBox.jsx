@@ -1,14 +1,16 @@
 import React from 'react';
 import { Search } from 'lucide-react';
-
+import { usePostsStore } from '../../store/postsStore';
 import { useDebounce } from '../../hooks/useDebounce';
 
 const SearchBox = () => {
   const [searchTerm, setSearchTerm] = React.useState('');
-  
+  const { setSearchQuery } = usePostsStore();
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
-
+  React.useEffect(() => {
+    setSearchQuery(debouncedSearchTerm);
+  }, [debouncedSearchTerm, setSearchQuery]);
 
   return (
     <div 
