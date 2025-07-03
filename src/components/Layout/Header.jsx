@@ -27,6 +27,8 @@ const Header = () => {
   };
 
   const isActive = (path) => location.pathname === path;
+  const isAdmin = user?.role === 'Admin';
+
 
   const NavLink = ({ to, children, className = "", onClick }) => (
     <Link
@@ -64,7 +66,7 @@ const Header = () => {
               Home
             </NavLink>
             
-            {isAuthenticated && (
+            {isAuthenticated && !isAdmin && (
               <>
                 <NavLink to="/dashboard">
                   <User className="w-4 h-4 mr-2 inline" />
@@ -73,6 +75,15 @@ const Header = () => {
                 <NavLink to="/create-post">
                   <PenTool className="w-4 h-4 mr-2 inline" />
                   Write
+                </NavLink>
+              </>
+            )}
+
+            {isAuthenticated && isAdmin && (
+              <>
+                <NavLink to="/admin/dashboard">
+                  <User className="w-4 h-4 mr-2 inline" />
+                  user Managment
                 </NavLink>
               </>
             )}
@@ -94,7 +105,7 @@ const Header = () => {
               <div className="flex items-center space-x-3">
                 <div className="flex items-center space-x-2">
                   <img
-                    src={user?.avatar || `https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=150`}
+                    src={user?.avatar || `https://media.istockphoto.com/id/1337144146/vector/default-avatar-profile-icon-vector.jpg?s=612x612&w=0&k=20&c=BIbFwuv7FxTWvh5S3vB6bkT0Qv8Vn8N5Ffseq84ClGI=`}
                     alt={user?.name}
                     className="w-8 h-8 rounded-full border-2 border-blue-200 dark:border-blue-400"
                   />
@@ -146,7 +157,7 @@ const Header = () => {
                 Home
               </NavLink>
               
-              {isAuthenticated ? (
+              {isAuthenticated && !isAdmin && (
                 <>
                   <NavLink to="/dashboard" onClick={() => setIsMenuOpen(false)}>
                     <User className="w-4 h-4 mr-2 inline" />
@@ -176,7 +187,9 @@ const Header = () => {
                     </button>
                   </div>
                 </>
-              ) : (
+              )}
+
+              {!isAuthenticated && (
                 <div className="flex space-x-3 pt-4 border-t border-gray-200 dark:border-gray-700">
                   <Link
                     to="/login"

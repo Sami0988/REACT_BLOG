@@ -11,6 +11,7 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import CreatePost from './pages/CreatePost';
 import EditPost from './pages/EditPost';
+import AdminDashboard from './pages/AdminDashboard';
 import { ToastContainer } from 'react-toastify';
 
 
@@ -38,6 +39,7 @@ function App() {
           <Route path="/posts/:id" element={<PostDetail />} /> 
           <Route path="/create-post" element={<CreatePost />} /> 
           <Route path="/edit-post/:id" element={<EditPost />} />
+           <Route path="/admin/dashboard" element={<AdminDashboard />} />
         </Routes>
       </Layout>
        <ToastContainer autoClose={3000} />

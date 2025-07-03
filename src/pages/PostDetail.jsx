@@ -4,25 +4,22 @@ import { Calendar, ArrowLeft, Edit, Trash2, MessageCircle } from 'lucide-react';
 import { format } from 'date-fns';
 import { usePostsStore } from '../store/postsStore';
 import { useAuthStore } from '../store/authStore';
+import { useThemeStore } from '../store/themeStore';
 import CommentList from '../components/Comments/CommentList';
 import CommentForm from '../components/Comments/CommentForm';
 
 const PostDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const {comments, fetchComments, currentPost, isLoading, error, fetchPost, deletePost, addComment } = usePostsStore();
+  const { comments, fetchComments, currentPost, isLoading, error, fetchPost, deletePost, addComment } = usePostsStore();
   const { user } = useAuthStore();
+  const { isDark } = useThemeStore();
   const [isSubmittingComment, setIsSubmittingComment] = useState(false);
 
   useEffect(() => {
-    fetchPost(id); // ✅ using real API
-  }, [id]);
-
-    useEffect(() => {
+    fetchPost(id);
     fetchComments(id);
   }, [id]);
-
-  console.log("this is from project details",comments)
 
   const handleDeletePost = async () => {
     if (window.confirm('Are you sure you want to delete this post?')) {
@@ -37,12 +34,9 @@ const PostDetail = () => {
     setIsSubmittingComment(true);
     try {
       const result = await addComment(parseInt(id), content);
-      if (result.success) {
-        return true;
-      } else {
-        alert(result.error || 'Failed to add comment');
-        return false;
-      }
+      if (result.success) return true;
+      alert(result.error || 'Failed to add comment');
+      return false;
     } finally {
       setIsSubmittingComment(false);
     }
@@ -68,9 +62,9 @@ const PostDetail = () => {
 
   if (error) {
     return (
-      <div className="text-center py-12">
-        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6 max-w-md mx-auto">
-          <p className="text-red-600 dark:text-red-400 mb-4">{error}</p>
+      <div className={`text-center py-12 ${isDark ? 'text-red-400' : 'text-red-600'}`}>
+        <div className={`rounded-lg p-6 max-w-md mx-auto border ${isDark ? 'bg-red-900/20 border-red-800' : 'bg-red-50 border-red-200'}`}>
+          <p className="mb-4">{error}</p>
           <Link
             to="/"
             className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
@@ -86,7 +80,7 @@ const PostDetail = () => {
   if (!currentPost) {
     return (
       <div className="text-center py-12">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Post not found</h1>
+        <h1 className={`text-2xl font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>Post not found</h1>
         <Link
           to="/"
           className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
@@ -100,20 +94,18 @@ const PostDetail = () => {
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
-      {/* Back Button */}
       <div data-aos="fade-right">
         <Link
           to="/"
-          className="inline-flex items-center text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+          className={`inline-flex items-center transition-colors ${isDark ? 'text-gray-300 hover:text-blue-400' : 'text-gray-600 hover:text-blue-600'}`}
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Posts
         </Link>
       </div>
 
-      {/* Post Content */}
-      <article 
-        className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200/50 dark:border-gray-700/50 overflow-hidden"
+      <article
+        className={`backdrop-blur-sm rounded-2xl shadow-xl border overflow-hidden ${isDark ? 'bg-gray-800/80 border-gray-700/50 text-white' : 'bg-white/80 border-gray-200/50 text-gray-900'}`}
         data-aos="fade-up"
       >
         <div className="p-8 border-b border-gray-200 dark:border-gray-700">
@@ -122,13 +114,13 @@ const PostDetail = () => {
               <img
                 src={`https://ui-avatars.com/api/?name=${currentPost.author_name || 'Unknown'}`}
                 alt={currentPost.author_name}
-                className="w-12 h-12 rounded-full border-2 border-blue-200 dark:border-blue-400"
+                className={`w-12 h-12 rounded-full border-2 ${isDark ? 'border-blue-400' : 'border-blue-200'}`}
               />
               <div>
-                <p className="font-medium text-gray-900 dark:text-white">
+                <p className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
                   {currentPost.author_name || 'Unknown Author'}
                 </p>
-                <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
+                <div className={`flex items-center text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
                   <Calendar className="w-4 h-4 mr-1" />
                   {formatDate(currentPost.created_at)}
                 </div>
@@ -139,14 +131,14 @@ const PostDetail = () => {
               <div className="flex items-center space-x-2">
                 <Link
                   to={`/edit-post/${currentPost.id}`}
-                  className="p-2 text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
+                  className={`p-2 rounded-lg transition-colors ${isDark ? 'text-gray-300 hover:text-blue-400 hover:bg-blue-900/20' : 'text-gray-400 hover:text-blue-600 hover:bg-blue-50'}`}
                   title="Edit post"
                 >
                   <Edit className="w-5 h-5" />
                 </Link>
                 <button
                   onClick={handleDeletePost}
-                  className="p-2 text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                  className={`p-2 rounded-lg transition-colors ${isDark ? 'text-gray-300 hover:text-red-400 hover:bg-red-900/20' : 'text-gray-400 hover:text-red-600 hover:bg-red-50'}`}
                   title="Delete post"
                 >
                   <Trash2 className="w-5 h-5" />
@@ -155,14 +147,13 @@ const PostDetail = () => {
             )}
           </div>
 
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4 leading-tight">
+          <h1 className={`text-4xl font-bold mb-4 leading-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>
             {currentPost.title}
           </h1>
         </div>
 
-        {/* Post Body */}
         <div className="p-8">
-          <div className="prose prose-lg prose-gray dark:prose-invert max-w-none">
+          <div className={`prose prose-lg max-w-none ${isDark ? 'prose-invert' : 'prose-gray'}`}>
             {(currentPost?.description || '').split('\n').map((paragraph, index) => (
               <p key={index} className="mb-4 leading-relaxed">
                 {paragraph}
@@ -172,26 +163,22 @@ const PostDetail = () => {
         </div>
       </article>
 
-      {/* Comments Section */}
-      <div 
-        className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200/50 dark:border-gray-700/50 overflow-hidden"
+      <div
+        className={`backdrop-blur-sm rounded-2xl shadow-xl border overflow-hidden ${isDark ? 'bg-gray-800/80 border-gray-700/50 text-white' : 'bg-white/80 border-gray-200/50 text-gray-900'}`}
         data-aos="fade-up"
         data-aos-delay="200"
       >
         <div className="p-6 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center space-x-2">
             <MessageCircle className="w-6 h-6 text-blue-600" />
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+            <h2 className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
               Comments ({currentPost.comments?.length || 0})
             </h2>
           </div>
         </div>
 
         <div className="p-6 space-y-6">
-          <CommentForm 
-            onSubmit={handleAddComment}
-            isSubmitting={isSubmittingComment}
-          />
+          <CommentForm onSubmit={handleAddComment} isSubmitting={isSubmittingComment} />
           <CommentList comments={comments} />
         </div>
       </div>

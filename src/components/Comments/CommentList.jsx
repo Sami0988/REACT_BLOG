@@ -3,7 +3,6 @@ import { Calendar, User } from 'lucide-react';
 import { format } from 'date-fns';
 
 const CommentList = ({ comments }) => {
-   console.log(comments)
   const formatDate = (dateString) => {
     try {
       return format(new Date(dateString), 'MMM dd, yyyy • h:mm a');

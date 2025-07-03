@@ -10,5 +10,6 @@ export const useThemeStore = create(
     {
       name: 'theme-storage',
     }
+    
   )
 );

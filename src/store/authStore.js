@@ -10,6 +10,8 @@ export const useAuthStore = create(
       isAuthenticated: false,
       isLoading: false,
       error: null,
+      users:[],
+      report:null,
 
       initAuth: () => {
         const token = localStorage.getItem('token');
@@ -79,6 +81,22 @@ verifyAuth: () => {
 },
 
 
+ fetchUsers: async () => {
+    set({ isLoading: true, error: null });
+    try {
+      console.log("response");
+      const response = await api.get('/admin/users'); 
+      console.log(response);
+      
+      set({ users: response.data, isLoading: false });
+    } catch (err) {
+      set({
+        error: err.response?.data?.message || 'Failed to fetch users',
+        isLoading: false,
+      });
+    }
+  },
+
       register: async (userData) => {
         set({ isLoading: true, error: null });
         try {
@@ -114,6 +132,19 @@ verifyAuth: () => {
           error: null 
         });
       },
+
+       fetchReport: async () => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await api.get('/admin/user-stats');
+      set({ report: response.data, isLoading: false });
+    } catch (error) {
+      set({
+        error: error.response?.data?.message || 'Failed to fetch report',
+        isLoading: false,
+      });
+    }
+  },
 
       clearError: () => set({ error: null }),
     }),

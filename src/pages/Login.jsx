@@ -44,7 +44,13 @@ const onSubmit = async (data) => {
 
     if (result.success) {
       toast.success('Login successful!');
-      navigate('/dashboard');
+       // Navigate based on user role
+
+      if (result.user.role === 'Admin') {
+        navigate('/admin/dashboard');
+      } else {
+        navigate('/dashboard');
+      }
     } else {
       toast.error(result.error || 'Login failed');
       setFormError('root', {
@@ -62,7 +68,6 @@ const onSubmit = async (data) => {
 };
 
 
-// In your form element:
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center py-12">
