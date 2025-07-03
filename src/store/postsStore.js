@@ -22,11 +22,16 @@ export const usePostsStore = create((set, get) => ({
       return;
     }
     
-    const filtered = posts.filter(post => 
-      post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      post.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      post.author?.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+   const filtered = posts.filter(post => {
+  
+  return (
+    (post.title?.toLowerCase() || '').includes(searchQuery.toLowerCase()) ||
+    (post.description?.toLowerCase() || '').includes(searchQuery.toLowerCase()) ||
+    (post.author_name?.toLowerCase() || '').includes(searchQuery.toLowerCase())
+  );
+});
+
+
     set({ filteredPosts: filtered });
   },
 

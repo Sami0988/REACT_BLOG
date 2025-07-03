@@ -9,13 +9,14 @@ import PostDetail from './pages/PostDetail';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import CreatePost from './pages/CreatePost';
+import EditPost from './pages/EditPost';
 import { ToastContainer } from 'react-toastify';
 
 
 
 function App() {
   const { initAuth } = useAuthStore();
-
   useEffect(() => {
     AOS.init({
       duration: 800,
@@ -34,10 +35,12 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/posts/:id" element={<PostDetail />} />  
+          <Route path="/posts/:id" element={<PostDetail />} /> 
+          <Route path="/create-post" element={<CreatePost />} /> 
+          <Route path="/edit-post/:id" element={<EditPost />} />
         </Routes>
       </Layout>
-       <ToastContainer />
+       <ToastContainer autoClose={3000} />
     </Router>
 
   );

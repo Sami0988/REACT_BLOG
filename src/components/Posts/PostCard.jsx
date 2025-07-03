@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, User, MessageCircle, Heart, Share2, Eye } from 'lucide-react';
+import { Calendar, MessageCircle, Heart, Share2, Eye } from 'lucide-react';
 import { format } from 'date-fns';
 
 const PostCard = ({ post, delay = 0 }) => {
@@ -15,6 +15,7 @@ const PostCard = ({ post, delay = 0 }) => {
   };
 
   const truncateContent = (content, maxLength = 150) => {
+    if (!content) return '';
     if (content.length <= maxLength) return content;
     return content.substr(0, maxLength) + '...';
   };
@@ -30,17 +31,17 @@ const PostCard = ({ post, delay = 0 }) => {
         {/* Author Info */}
         <div className="flex items-center mb-4">
           <img
-            src={post.author?.avatar || `https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=150`}
-            alt={post.author?.name}
+            src={`https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=150`}
+            alt={post.author_name}
             className="w-10 h-10 rounded-full border-2 border-blue-200 dark:border-blue-400 mr-3"
           />
           <div className="flex-1">
             <p className="font-medium text-gray-900 dark:text-white">
-              {post.author?.name || 'Unknown Author'}
+              {post.author_name || 'Unknown Author'}
             </p>
             <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
               <Calendar className="w-4 h-4 mr-1" />
-              {formatDate(post.createdAt)}
+              {formatDate(post.created_at)}
             </div>
           </div>
         </div>
@@ -52,9 +53,9 @@ const PostCard = ({ post, delay = 0 }) => {
           </h2>
         </Link>
 
-        {/* Post Content Preview */}
+        {/* Post Description Preview */}
         <p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">
-          {truncateContent(post.content)}
+          {truncateContent(post.description)}
         </p>
 
         {/* Action Buttons */}

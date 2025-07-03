@@ -5,24 +5,31 @@ import { useAuthStore } from '../store/authStore';
 import { usePostsStore } from '../store/postsStore';
 import { MOCK_POSTS, MOCK_USER } from '../utils/constants';
 import { format } from 'date-fns';
+import DeleteConfirmation from '../components/UI/DeleteConfirmation';
+import { toast } from 'react-toastify';
 
 const Dashboard = () => {
   const { user, isAuthenticated } = useAuthStore();
   const { userPosts, isLoading, error, fetchUserPosts, deletePost } = usePostsStore();
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      // For demo purposes, use mock data filtered by current user
-      const mockUserPosts = MOCK_POSTS.slice(0, 2); // Simulate user having 2 posts
-      usePostsStore.setState({ userPosts: mockUserPosts });
-      // Uncomment this to use real API
-      // fetchUserPosts();
-    }
-  }, [isAuthenticated]);
+    const [postToDelete, setPostToDelete] = React.useState(null);
 
-  const handleDeletePost = async (postId) => {
-    if (window.confirm('Are you sure you want to delete this post?')) {
-      await deletePost(postId);
+useEffect(() => {
+  if (isAuthenticated) {
+    usePostsStore.getState().fetchUserPosts();
+  }
+}, [isAuthenticated]);
+
+
+
+
+  const handleDelete = async () => {
+    const result = await deletePost(postToDelete.id);
+    setPostToDelete(null);
+    if (result.success) {
+      toast.success('Post deleted successfully!');
+    } else {
+      toast.error(result.error);
     }
   };
 
@@ -166,7 +173,7 @@ const Dashboard = () => {
                         {post.title}
                       </h3>
                       <p className="text-gray-600 dark:text-gray-300 line-clamp-2 mb-4">
-                        {post.content.substring(0, 150)}...
+                        {post?.description?.substring(0, 100) || 'No description available'}...
                       </p>
                     </Link>
                     
@@ -185,14 +192,14 @@ const Dashboard = () => {
 
                   <div className="flex items-center space-x-2 ml-4">
                     <Link
-                      to={`/edit-post/${post.id}`}
+                     to={`/edit-post/${post.id}`}
                       className="p-2 text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
                       title="Edit post"
                     >
                       <Edit className="w-4 h-4" />
                     </Link>
                     <button
-                      onClick={() => handleDeletePost(post.id)}
+                       onClick={() => setPostToDelete(post)}
                       className="p-2 text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
                       title="Delete post"
                     >
@@ -205,6 +212,12 @@ const Dashboard = () => {
           </div>
         )}
       </div>
+
+       <DeleteConfirmation
+        isOpen={!!postToDelete}
+        onClose={() => setPostToDelete(null)}
+        onConfirm={handleDelete}
+      />
     </div>
   );
 };

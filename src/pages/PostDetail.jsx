@@ -1,27 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { Calendar, User, ArrowLeft, Edit, Trash2, MessageCircle } from 'lucide-react';
+import { Calendar, ArrowLeft, Edit, Trash2, MessageCircle } from 'lucide-react';
 import { format } from 'date-fns';
 import { usePostsStore } from '../store/postsStore';
 import { useAuthStore } from '../store/authStore';
 import CommentList from '../components/Comments/CommentList';
 import CommentForm from '../components/Comments/CommentForm';
-import { MOCK_POSTS } from '../utils/constants';
 
 const PostDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { currentPost, isLoading, error, fetchPost, deletePost, addComment } = usePostsStore();
-  const { user, isAuthenticated } = useAuthStore();
+  const { user } = useAuthStore();
   const [isSubmittingComment, setIsSubmittingComment] = useState(false);
 
   useEffect(() => {
-    const mockPost = MOCK_POSTS.find(post => post.id === parseInt(id));
-    if (mockPost) {
-      usePostsStore.setState({ currentPost: mockPost });
-    }
-    // Uncomment this to use real API
-    // fetchPost(id);
+    fetchPost(id); // ✅ using real API
   }, [id]);
 
   const handleDeletePost = async () => {
@@ -56,7 +50,7 @@ const PostDetail = () => {
     }
   };
 
-  const isAuthor = user && currentPost && user.id === currentPost.author?.id;
+  const isAuthor = user && currentPost && user.id === currentPost.user_id;
 
   if (isLoading) {
     return (
@@ -116,22 +110,21 @@ const PostDetail = () => {
         className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200/50 dark:border-gray-700/50 overflow-hidden"
         data-aos="fade-up"
       >
-        {/* Post Header */}
         <div className="p-8 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-start justify-between mb-6">
             <div className="flex items-center space-x-4">
               <img
-                src={currentPost.author?.avatar || `https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=150`}
-                alt={currentPost.author?.name}
+                src={`https://ui-avatars.com/api/?name=${currentPost.author_name || 'Unknown'}`}
+                alt={currentPost.author_name}
                 className="w-12 h-12 rounded-full border-2 border-blue-200 dark:border-blue-400"
               />
               <div>
                 <p className="font-medium text-gray-900 dark:text-white">
-                  {currentPost.author?.name || 'Unknown Author'}
+                  {currentPost.author_name || 'Unknown Author'}
                 </p>
                 <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
                   <Calendar className="w-4 h-4 mr-1" />
-                  {formatDate(currentPost.createdAt)}
+                  {formatDate(currentPost.created_at)}
                 </div>
               </div>
             </div>
@@ -164,7 +157,7 @@ const PostDetail = () => {
         {/* Post Body */}
         <div className="p-8">
           <div className="prose prose-lg prose-gray dark:prose-invert max-w-none">
-            {currentPost.content.split('\n').map((paragraph, index) => (
+            {(currentPost?.description || '').split('\n').map((paragraph, index) => (
               <p key={index} className="mb-4 leading-relaxed">
                 {paragraph}
               </p>
@@ -193,7 +186,6 @@ const PostDetail = () => {
             onSubmit={handleAddComment}
             isSubmitting={isSubmittingComment}
           />
-          
           <CommentList comments={currentPost.comments} />
         </div>
       </div>

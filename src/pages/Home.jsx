@@ -14,17 +14,9 @@ const Home = () => {
   const { filteredPosts, isLoading, error, fetchPosts } = usePostsStore();
   const { isAuthenticated } = useAuthStore();
 
-  useEffect(() => {
-    // For demo purposes, use mock data
-    if (filteredPosts.length === 0) {
-      usePostsStore.setState({ 
-        posts: MOCK_POSTS, 
-        filteredPosts: MOCK_POSTS 
-      });
-    }
-    // Uncomment this to use real API
-    // fetchPosts();
-  }, []);
+ useEffect(() => {
+  usePostsStore.getState().fetchPosts();
+}, []);
 
   return (
     <div className="space-y-12">
