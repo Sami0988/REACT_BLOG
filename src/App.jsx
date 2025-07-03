@@ -8,6 +8,7 @@ import { useAuthStore } from './store/authStore';
 import PostDetail from './pages/PostDetail';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import { ToastContainer } from 'react-toastify';
 
 
 
@@ -28,6 +29,7 @@ function App() {
     <Router>
       <Layout>
         <Routes>
+          
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
@@ -35,7 +37,9 @@ function App() {
            
         </Routes>
       </Layout>
+       <ToastContainer />
     </Router>
+
   );
 }
 

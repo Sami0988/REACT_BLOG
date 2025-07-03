@@ -5,6 +5,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { LogIn, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
+import { toast } from 'react-toastify';
 
 const schema = yup.object({
   email: yup
@@ -26,27 +27,46 @@ const Login = () => {
     register,
     handleSubmit,
     formState: { errors },
+    setError: setFormError,
   } = useForm({
     resolver: yupResolver(schema),
   });
 
   React.useEffect(() => {
     clearError();
+    return () => clearError(); 
   }, [clearError]);
 
-  const onSubmit = async (data) => {
+const onSubmit = async (data) => {
+  try {
+    clearError();
     const result = await login(data);
+
     if (result.success) {
+      toast.success('Login successful!');
       navigate('/dashboard');
+    } else {
+      toast.error(result.error || 'Login failed');
+      setFormError('root', {
+        type: 'manual',
+        message: result.error || 'Login failed',
+      });
     }
-  };
+  } catch (err) {
+    toast.error(err.message || 'An unexpected error occurred');
+    setFormError('root', {
+      type: 'manual',
+      message: err.message || 'An unexpected error occurred',
+    });
+  }
+};
+
+
+// In your form element:
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center py-12">
-      <div 
-        className="w-full max-w-md"
-        data-aos="fade-up"
-      >
+      <div className="w-full max-w-md" data-aos="fade-up">
         <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200/50 dark:border-gray-700/50 p-8">
           {/* Header */}
           <div className="text-center mb-8">
@@ -61,15 +81,18 @@ const Login = () => {
             </p>
           </div>
 
-          {/* Error Message */}
-          {error && (
+          {/* Error Messages */}
+          {(error || errors.root) && (
             <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-              <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>
+              <p className="text-red-600 dark:text-red-400 text-sm">
+                {error || errors.root?.message}
+              </p>
             </div>
           )}
 
           {/* Form */}
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <form className="space-y-6" onSubmit={(e) => handleSubmit((data) => onSubmit(data, e))(e)}>
+
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Email Address
@@ -108,6 +131,7 @@ const Login = () => {
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                  tabIndex={-1}
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
