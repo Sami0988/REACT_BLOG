@@ -3,6 +3,7 @@ import { Calendar, User } from 'lucide-react';
 import { format } from 'date-fns';
 
 const CommentList = ({ comments }) => {
+   console.log(comments)
   const formatDate = (dateString) => {
     try {
       return format(new Date(dateString), 'MMM dd, yyyy • h:mm a');
@@ -39,12 +40,13 @@ const CommentList = ({ comments }) => {
             
             <div className="flex-1 min-w-0">
               <div className="flex items-center space-x-2 mb-2">
-                <span className="font-medium text-gray-900 dark:text-white">
-                  {comment.author?.name || 'Anonymous'}
-                </span>
+              <span className="font-medium text-gray-900 dark:text-white">
+                  {comment.user?.name || 'Anonymous'}
+              </span>
                 <div className="flex items-center text-xs text-gray-500 dark:text-gray-400">
                   <Calendar className="w-3 h-3 mr-1" />
-                  {formatDate(comment.createdAt)}
+                  {formatDate(comment.created_at)} 
+
                 </div>
               </div>
               

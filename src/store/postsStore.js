@@ -9,6 +9,7 @@ export const usePostsStore = create((set, get) => ({
   error: null,
   searchQuery: '',
   filteredPosts: [],
+   comments: [],
 
   setSearchQuery: (query) => {
     set({ searchQuery: query });
@@ -152,6 +153,20 @@ export const usePostsStore = create((set, get) => ({
     } catch (error) {
       const message = error.response?.data?.message || 'Failed to add comment';
       return { success: false, error: message };
+    }
+  },
+
+  fetchComments: async (postId) => {
+    set({ isLoading: true, error: null });
+    try {
+      const res = await api.get(`/posts/${postId}/comments`);
+      
+      set({ comments: res.data.comments || [], isLoading: false });
+    } catch (err) {
+      set({
+        error: err.response?.data?.message || 'Failed to load comments',
+        isLoading: false,
+      });
     }
   },
 

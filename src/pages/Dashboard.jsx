@@ -21,8 +21,6 @@ useEffect(() => {
 }, [isAuthenticated]);
 
 
-
-
   const handleDelete = async () => {
     const result = await deletePost(postToDelete.id);
     setPostToDelete(null);

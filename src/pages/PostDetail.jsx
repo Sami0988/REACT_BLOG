@@ -10,13 +10,19 @@ import CommentForm from '../components/Comments/CommentForm';
 const PostDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { currentPost, isLoading, error, fetchPost, deletePost, addComment } = usePostsStore();
+  const {comments, fetchComments, currentPost, isLoading, error, fetchPost, deletePost, addComment } = usePostsStore();
   const { user } = useAuthStore();
   const [isSubmittingComment, setIsSubmittingComment] = useState(false);
 
   useEffect(() => {
     fetchPost(id); // ✅ using real API
   }, [id]);
+
+    useEffect(() => {
+    fetchComments(id);
+  }, [id]);
+
+  console.log("this is from project details",comments)
 
   const handleDeletePost = async () => {
     if (window.confirm('Are you sure you want to delete this post?')) {
@@ -186,7 +192,7 @@ const PostDetail = () => {
             onSubmit={handleAddComment}
             isSubmitting={isSubmittingComment}
           />
-          <CommentList comments={currentPost.comments} />
+          <CommentList comments={comments} />
         </div>
       </div>
     </div>
